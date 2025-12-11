@@ -17,6 +17,7 @@ Bu proje, gürültülü sensör verilerinden anlamlı geometrik şekiller çıka
 ### 🚀 Özellikler
 
 *   **TOML Veri İşleme:** Lidar tarama verilerini (`scan.toml`) okur ve ayrıştırır.
+*   **Esnek Veri Girişi:** Yerel dosyalardan veya doğrudan URL üzerinden veri okuyabilir.
 *   **Gürültü Filtreleme:** Ham veriyi işleyerek aykırı değerleri temizler.
 *   **RANSAC Algoritması:** Nokta bulutu içerisindeki en uygun doğruları (lines) iteratif olarak tespit eder.
 *   **Segmentasyon:** Tespit edilen doğruları ve bu doğrulara ait "inlier" (içeride kalan) noktaları ayırır.
@@ -29,11 +30,12 @@ Projeyi derlemek ve görselleştirmek için aşağıdaki araçlara ihtiyacınız
 
 *   **GCC Compiler:** C kodunu derlemek için.
 *   **Gnuplot:** Veri analizi sonuçlarını görselleştirmek için.
+*   **Curl:** URL üzerinden veri indirmek için (Genellikle Linux sistemlerde yüklü gelir).
 
 #### Linux (Ubuntu/Debian) Kurulumu:
 ```bash
 sudo apt update
-sudo apt install build-essential gnuplot
+sudo apt install build-essential gnuplot curl
 ```
 
 ### ⚙️ Derleme ve Çalıştırma
@@ -48,11 +50,24 @@ gcc main.c -o lidar-ransac -lm
 ```
 
 #### 2. Programı Çalıştırın
-Program `scan.toml` dosyasını okuyacak ve analiz sonuçlarını `.dat` dosyalarına yazacaktır:
+Programı farklı şekillerde kullanabilirsiniz:
 
-```bash
-./lidar-ransac
-```
+*   **Varsayılan (Dizindeki `scan.toml` dosyasını arar):**
+    ```bash
+    ./lidar-ransac
+    ```
+
+*   **Yerel Bir Dosya ile:**
+    ```bash
+    ./lidar-ransac verilerim/oda_taramasi.toml
+    ```
+
+*   **Bir URL ile (Dosyayı indirir ve işler):**
+    ```bash
+    ./lidar-ransac http://ornek.com/lidar_verisi.toml
+    ```
+
+Program analiz sonuçlarını `.dat` dosyalarına yazacaktır.
 
 #### 3. Sonuçları Görselleştirin
 Üretilen `.dat` dosyalarını kullanarak grafiği oluşturun:
@@ -77,6 +92,7 @@ This project is designed to extract meaningful geometric shapes from noisy senso
 ### 🚀 Features
 
 *   **TOML Data Parsing:** Reads and parses Lidar scan data from `scan.toml`.
+*   **Flexible Input:** Supports reading data from local files or directly from URLs.
 *   **Noise Filtering:** Processes raw data to remove outliers.
 *   **RANSAC Algorithm:** Iteratively detects the best-fitting lines within the point cloud.
 *   **Segmentation:** Separates detected lines and their corresponding "inlier" points.
@@ -89,11 +105,12 @@ To compile and visualize the project, you need the following tools:
 
 *   **GCC Compiler:** To compile the C code.
 *   **Gnuplot:** To visualize the data analysis results.
+*   **Curl:** To download data from URLs (Usually pre-installed on Linux).
 
 #### Linux (Ubuntu/Debian) Installation:
 ```bash
 sudo apt update
-sudo apt install build-essential gnuplot
+sudo apt install build-essential gnuplot curl
 ```
 
 ### ⚙️ Compilation & Execution
@@ -108,11 +125,24 @@ gcc main.c -o lidar-ransac -lm
 ```
 
 #### 2. Run the Program
-The program will read `scan.toml` and write analysis results to `.dat` files:
+You can use the program in different ways:
 
-```bash
-./lidar-ransac
-```
+*   **Default (Looks for `scan.toml` in the current directory):**
+    ```bash
+    ./lidar-ransac
+    ```
+
+*   **With a Local File:**
+    ```bash
+    ./lidar-ransac my_data/room_scan.toml
+    ```
+
+*   **With a URL (Downloads and processes the file):**
+    ```bash
+    ./lidar-ransac http://example.com/lidar_data.toml
+    ```
+
+The program will write analysis results to `.dat` files.
 
 #### 3. Visualize Results
 Generate the graph using the produced `.dat` files:
@@ -127,7 +157,7 @@ This process will create an image named `proje_ciktisi.png` in the directory.
 ```
 LidarRansac-C/
 ├── main.c           # Source code (RANSAC implementation)
-├── scan.toml        # Input: Lidar scan data
+├── scan.toml        # Default input data / Varsayılan veri
 ├── cizim.gp         # Gnuplot visualization script
 ├── .gitignore       # Git ignore file
 └── README.md        # Documentation / Dokümantasyon

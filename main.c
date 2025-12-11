@@ -53,44 +53,18 @@ char* bosluk_temizleyici(char* metin) { // okunan verinin başındaki ve sonunda
     return metin;
 }
 
-int secilen_urlden_dosya_indirme(const char* kaynak_dosya_adi) { // dinamik url deposundan seçilen dosyayı indirir
-    const char* urls[] = {
-        "http://abilgisayar.kocaeli.edu.tr/lidar1.toml",
-        "http://abilgisayar.kocaeli.edu.tr/lidar2.toml",
-        "http://abilgisayar.kocaeli.edu.tr/lidar3.toml",
-        "http://abilgisayar.kocaeli.edu.tr/lidar4.toml",
-        "http://abilgisayar.kocaeli.edu.tr/lidar5.toml"
-    };
-    int num_urls = sizeof(urls ) / sizeof(urls[0]); // dinamik yapan kısım burası
-
-    printf("Lütfen kullanmak istediğiniz veri dosyasını seçin:\n");
-    for (int i = 0; i < num_urls; i++) {
-        printf("  %d: %s\n", i + 1, urls[i]);
-    }
-
-    int secim = 0;
-    while (1) {
-        printf("\nSeçiminiz (1-%d): ", num_urls);
-        if (scanf("%d", &secim) == 1 && secim >= 1 && secim <= num_urls) {
-            break;
-        } 
-        else {
-            printf("Geçersiz giriş! Lütfen 1 ile %d arasında bir sayı girin.\n", num_urls);
-            while (getchar() != '\n'); 
-        }
-    }
-    const char* secilen_url = urls[secim - 1]; // indisler 0 dan başladığı için -1 ekledik
-    char komut[2048]; // çok uzun olabilir o yüzden bu kadar fazla boyut verdik
-    sprintf(komut, "curl -s -L \"%s\" -o %s", secilen_url, kaynak_dosya_adi); // -s ile sessiz moda aldık -L ile redirect varsa devam etmesini sağladık -o ile isim verdik
-    printf("\n'%s' adresinden veri indiriliyor...\n", secilen_url);
+int dosya_indir(const char* url, const char* hedef_dosya) {
+    char komut[2048];
+    // -s: silent, -L: follow redirects, -o: output file
+    // Güvenlik: URL ve dosya adı tırnak içine alındı
+    sprintf(komut, "curl -s -L \"%s\" -o \"%s\"", url, hedef_dosya);
+    printf("Veri indiriliyor: %s -> %s\n", url, hedef_dosya);
+    
     int sonuc = system(komut);
-
     if (sonuc != 0) {
-        printf("HATA: Dosya indirilemedi! İnternet bağlantınızı veya curl'un kurulu olup olmadığını kontrol edin.\n");
+        printf("HATA: İndirme başarısız! (curl hatası veya internet yok)\n");
         return 0;
     }
-
-    printf("Dosya başarıyla '%s' olarak indirildi.\n\n", kaynak_dosya_adi);
     return 1;
 }
 
@@ -621,20 +595,38 @@ void create_gnuplot_script(LidarData* data, dogru_denklemi* lines, int num_lines
     printf("Gorsel 'proje_ciktisi.png' olarak kaydedildi.\n");
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     srand(time(NULL));
 
-    const char* indirilecek_dosya_adi = "scan.toml"; // Dosyayı indir
-    if (secilen_urlden_dosya_indirme(indirilecek_dosya_adi) == 0) {
-        printf("Program sonlandırılıyor.\n");
-        return 1; // İndirme başarısız oldu, programdan çık
+    const char* islenecek_dosya = "scan.toml"; // Varsayılan dosya
+    char indirilen_dosya_adi[] = "indirilen_veri.toml"; // URL indirmesi için geçici ad
+
+    // Argüman kontrolü
+    if (argc > 1) {
+        char* arg = argv[1];
+        if (strncmp(arg, "http://", 7) == 0 || strncmp(arg, "https://", 8) == 0) {
+            // URL verildi, indir
+            if (dosya_indir(arg, indirilen_dosya_adi)) {
+                islenecek_dosya = indirilen_dosya_adi;
+            } else {
+                return 1; // İndirme hatası
+            }
+        } else {
+            // Yerel dosya yolu verildi
+            islenecek_dosya = arg;
+        }
+    } else {
+        printf("Bilgi: Veri dosyası belirtilmedi, varsayılan '%s' aranıyor.\n", islenecek_dosya);
+        printf("Kullanım: %s <dosya_yolu> veya %s <url>\n\n", argv[0], argv[0]);
     }
   
     printf("--- LIDAR Veri Analiz Programi Başlatiliyor ---\n");
+    printf("İşlenen dosya: %s\n", islenecek_dosya);
+
     LidarData tarama_verisi = {0}; 
     
-     if (!toml_okuma_yazma(indirilecek_dosya_adi, &tarama_verisi)) {
-        printf("Kritik hata: Dosya okunamadı. Program sonlandırılıyor.\n");
+    if (!toml_okuma_yazma(islenecek_dosya, &tarama_verisi)) {
+        printf("Kritik hata: '%s' dosyası okunamadı veya bulunamadı.\n", islenecek_dosya);
         return 1;
     }
 
