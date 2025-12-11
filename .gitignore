@@ -1,0 +1,12 @@
+# Compilation
+main
+*.o
+
+# Output files
+*.dat
+*.png
+*.pdf
+
+# Editor/OS files
+.DS_Store
+.vscode/
