@@ -32,11 +32,25 @@ Projeyi derlemek ve görselleştirmek için aşağıdaki araçlara ihtiyacınız
 *   **Gnuplot:** Veri analizi sonuçlarını görselleştirmek için.
 *   **Curl:** URL üzerinden veri indirmek için (Genellikle Linux sistemlerde yüklü gelir).
 
-#### Linux (Ubuntu/Debian) Kurulumu:
+#### 🐧 Linux (Ubuntu/Debian)
 ```bash
 sudo apt update
 sudo apt install build-essential gnuplot curl
 ```
+
+#### 🍎 macOS
+Homebrew paket yöneticisi ile:
+```bash
+brew install gcc gnuplot
+```
+*(Curl genellikle yüklü gelir)*
+
+#### 🪟 Windows
+En iyi deneyim için **WSL (Windows Subsystem for Linux)** kullanılması önerilir (Linux adımlarını takip edin).
+Alternatif olarak:
+1.  **MinGW** (GCC derleyicisi için) kurun.
+2.  **Gnuplot**'u resmi sitesinden indirip kurun ve sistem yoluna (PATH) ekleyin.
+3.  **Curl** Windows 10 ve üzeri sürümlerde varsayılan olarak mevcuttur.
 
 ### ⚙️ Derleme ve Çalıştırma
 
@@ -107,11 +121,25 @@ To compile and visualize the project, you need the following tools:
 *   **Gnuplot:** To visualize the data analysis results.
 *   **Curl:** To download data from URLs (Usually pre-installed on Linux).
 
-#### Linux (Ubuntu/Debian) Installation:
+#### 🐧 Linux (Ubuntu/Debian)
 ```bash
 sudo apt update
 sudo apt install build-essential gnuplot curl
 ```
+
+#### 🍎 macOS
+Using Homebrew package manager:
+```bash
+brew install gcc gnuplot
+```
+*(Curl comes pre-installed)*
+
+#### 🪟 Windows
+For the best experience, using **WSL (Windows Subsystem for Linux)** is recommended (follow Linux steps).
+Alternatively:
+1.  Install **MinGW** (for GCC compiler).
+2.  Download and install **Gnuplot** from the official website and add it to PATH.
+3.  **Curl** is available by default on Windows 10/11.
 
 ### ⚙️ Compilation & Execution
 
