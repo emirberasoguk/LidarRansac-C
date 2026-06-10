@@ -193,4 +193,4 @@ LidarRansac-C/
 
 ## 📝 License / Lisans
 
-This project is open-source and available for educational/development purposes.
+This project is licensed under the GNU GPLv3 License. See the [LICENSE](LICENSE) file for details. / Bu proje GNU GPLv3 Lisansı ile lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakınız.
